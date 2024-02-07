@@ -1,0 +1,11 @@
+{
+	"namespace": "kafka",
+	"type": "record",
+	"name": "KafkaMessage",
+	"fields": [
+		{"name": "Id", "type": "string"},
+		{"name": "Key", "type": "string"},
+		{"name": "Topic", "type": "string"},
+		{"name": "Partition", "type": "int"},
+	]
+}

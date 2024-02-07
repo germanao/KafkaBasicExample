@@ -1,4 +1,15 @@
 ﻿using Confluent.Kafka;
+using Confluent.Kafka.SyncOverAsync;
+using Confluent.SchemaRegistry;
+using Confluent.SchemaRegistry.Serdes;
+using kafka;
+
+var schemaConfig = new SchemaRegistryConfig
+{
+    Url = "http://localhost:8081"
+};
+
+var schemaRegistry = new CachedSchemaRegistryClient(schemaConfig);
 
 var config = new ConsumerConfig
 {
@@ -6,9 +17,11 @@ var config = new ConsumerConfig
     BootstrapServers = "localhost:9092",
 };
 
-using var consumer = new ConsumerBuilder<string, string>(config).Build();
+using var consumer = new ConsumerBuilder<string, KafkaMessage>(config)
+    .SetValueDeserializer(new AvroDeserializer<KafkaMessage>(schemaRegistry).AsSyncOverAsync())
+    .Build();
 
-consumer.Subscribe("test-topic");
+consumer.Subscribe("test-topic2");
 
 while (true)
 {
